@@ -197,17 +197,20 @@ url0="http://161.118.192.255"
 url="https://www.youtube.com/embed/"
 
 f="/home/opc/msx/$f"; [ -f "$f" ] || f="/dev/null"
+
 # "shuf" vs "sort -R" # significantly slower
-shuf "$f" | head -n 100 | while read line
-do
-  [ ! -z "$line" ] && [ ${line:0:1} != '#' ] && (
-    echo "$line" | awk -F'[\t,|]' -v q="$q" \
-      -v url="$url" -v url0="$url0" \
-      '{ if (length($1)<=11) print "<iframe id=\"" $1 "\" src=\"" url $1 "?mute=0&enablejsapi=1&origin=" url0 "\"></iframe>" }'
-      # print "<div id=\"" $1 "\" style=\"float:left;\"></div>"
-      # print "<iframe id=\"" $1 "\" src=\"" url $1 "?enablejsapi=1&origin=" url0 "\"></iframe>"
-  )
-done
+# shuf "$f" | head -n 100 | while read line
+# do
+#   [ ! -z "$line" ] && [ ${line:0:1} != '#' ] && (
+#     echo "$line" | awk ... '{ if (length($1)<=11) print ... }'
+#   )
+# done
+
+shuf "$f" | head -n 100 | awk -F'[\t,|]' -v q="$q" \
+  -v url="$url" -v url0="$url0" \
+  '(NF && /^[^#]/ && length($1)<=11) { print "<iframe id=\"" $1 "\" src=\"" url $1 "?mute=0&enablejsapi=1&origin=" url0 "\"></iframe>" }'
+  # print "<div id=\"" $1 "\" style=\"float:left;\"></div>"
+  # print "<iframe id=\"" $1 "\" src=\"" url $1 "?enablejsapi=1&origin=" url0 "\"></iframe>"
 
 cat << EOT
 </body>
