@@ -1,0 +1,32 @@
+#!/bin/sh
+#pwd ; cd ~/m3u/plutotv/ ; pwd
+#rm hls* ; rm *vtt
+
+#curl -s 'http://161.118.192.255/cgi-bin/plutotv.m3u?63fe2ec4dff38e000835f786' > master.m3u8.0
+curl -s `sed -n '3s|^.*URI="\([^"]*\)".*$|\1|p' master.m3u8.0` > subtitles.m3u8.0
+curl -s `sed -n '5p' master.m3u8.0` > playlist.m3u8.0
+echo "done.00"
+
+wget -q `sed -n '9p' subtitles.m3u8.0`
+wget -q `sed -n '11p' subtitles.m3u8.0`
+wget -q `sed -n '13p' subtitles.m3u8.0`
+wget -q `sed -n '15p' subtitles.m3u8.0`
+wget -q `sed -n '17p' subtitles.m3u8.0`
+echo "done.11"
+
+wget -q `sed -n '7s|^.*URI="\([^"]*\)".*$|\1|p' playlist.m3u8.0`
+wget -q `sed -n '9p' playlist.m3u8.0`
+wget -q `sed -n '10s|^.*URI="\([^"]*\)".*$|\1|p' playlist.m3u8.0`
+wget -q `sed -n '12p' playlist.m3u8.0`
+wget -q `sed -n '13s|^.*URI="\([^"]*\)".*$|\1|p' playlist.m3u8.0`
+wget -q `sed -n '15p' playlist.m3u8.0`
+wget -q `sed -n '16s|^.*URI="\([^"]*\)".*$|\1|p' playlist.m3u8.0`
+wget -q `sed -n '18p' playlist.m3u8.0`
+wget -q `sed -n '19s|^.*URI="\([^"]*\)".*$|\1|p' playlist.m3u8.0`
+wget -q `sed -n '21p' playlist.m3u8.0`
+echo "done.22"
+
+sed 's|^http.*/\(.*\)$|\1|g' subtitles.m3u8.0 > subtitles.m3u8
+sed 's|^\(.*\)http.*/\([^"]*\)\(.*\)$|\1\2\3|g' playlist.m3u8.0 > playlist.m3u8
+sed 's|^\(.*\)http.*/\([^"]*\)\(.*\)$|\1\2\3|g' master.m3u8.0 > master.m3u8
+echo "done.33"
